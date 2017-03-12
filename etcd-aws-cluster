@@ -29,7 +29,7 @@ if [ -f "$etcd_peers_file_path" ]; then
     exit 0
 fi
 
-if [ !-d "/etc/systemd/system/etcd2.service.d" ]; then
+if [ ! -d "/etc/systemd/system/etcd2.service.d" ]; then
     echo "$pkg: /etc/systemd/system/etcd2.service.d does not exist, creating"
     mkdir /etc/systemd/system/etcd2.service.d
 fi
