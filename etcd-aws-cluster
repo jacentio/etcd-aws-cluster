@@ -1,7 +1,7 @@
 #! /bin/bash
 pkg="etcd-aws-cluster"
 version="0.5"
-etcd_peers_file_path="/etc/systemd/system/etcd2.service.d/etcd-peers.conf"
+etcd_peers_file_path="/etc/default/etcd"
 export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq --raw-output .region)
 if [[ ! $AWS_DEFAULT_REGION ]]; then
     echo "$pkg: failed to get region"
@@ -27,11 +27,6 @@ wait_time=3
 if [ -f "$etcd_peers_file_path" ]; then
     echo "$pkg: etcd-peers file $etcd_peers_file_path already created, exiting"
     exit 0
-fi
-
-if [ ! -d "/etc/systemd/system/etcd2.service.d" ]; then
-    echo "$pkg: /etc/systemd/system/etcd2.service.d does not exist, creating"
-    mkdir /etc/systemd/system/etcd2.service.d
 fi
 
 ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
@@ -175,6 +170,10 @@ ETCD_INITIAL_CLUSTER_STATE=existing
 ETCD_NAME=$ec2_instance_id
 ETCD_INITIAL_CLUSTER="$etcd_initial_cluster"
 ETCD_PROXY=$etcd_proxy
+ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
+ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379"
+ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://0.0.0.0:2380"
 EOF
 
 # otherwise I was already listed as a member so assume that this is a new cluster
@@ -193,6 +192,10 @@ else
 ETCD_INITIAL_CLUSTER_STATE=new
 ETCD_NAME=$ec2_instance_id
 ETCD_INITIAL_CLUSTER="$etcd_initial_cluster"
+ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
+ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379"
+ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://0.0.0.0:2380"
 EOF
 fi
 
