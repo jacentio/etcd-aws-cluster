@@ -1,7 +1,7 @@
 etcd-aws-cluster
 ==============
 
-This container serves to assist in the creation of an etcd (2.x) cluster from an AWS auto scaling group. It writes a file to /etc/sysconfig/etcd-peers that contains parameters for etcd:
+This container serves to assist in the creation of an etcd (2.x) cluster from an AWS auto scaling group. It writes a file to /etc/systemd/system/etcd2.service.d/etcd-peers.conf that contains parameters for etcd:
 
 - ETCD_INITIAL_CLUSTER_STATE
   - either `new` or `existing`   
@@ -12,13 +12,6 @@ This container serves to assist in the creation of an etcd (2.x) cluster from an
 - ETCD_INITIAL_CLUSTER
   - this is a list of the machines (id and ip) expected to be in the cluster, including the new machine
   - e.g., "i-5fc4c9e1=http://10.0.0.1:2380,i-694fad83=http://10.0.0.2:2380"
-
-This file can then be loaded as an EnvironmentFile in an etcd2 drop-in to properly configure etcd2:
-
-```
-[Service]
-EnvironmentFile=/etc/sysconfig/etcd-peers
-```
 
 Workflow
 --------
@@ -45,7 +38,7 @@ Workflow
 Usage
 -----
 
-```docker run -v /etc/sysconfig/:/etc/sysconfig/ monsantoco/etcd-aws-cluster```
+```docker run -v /etc/systemd/system/:/etc/systemd/system/ jacentio/etcd-aws-cluster```
 
 Environment Variables
 * PROXY_ASG - If specified forces into proxy=on and uses the vaue of PROXY_ASG as the autocaling group that contains the master servers
