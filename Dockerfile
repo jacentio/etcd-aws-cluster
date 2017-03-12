@@ -16,6 +16,6 @@ COPY etcd-aws-cluster /etcd-aws-cluster
 VOLUME ["/root/.aws"]
 
 # Expose directory to write output to, and to potentially read certs from
-VOLUME ["/etc/sysconfig/", "/etc/certs"]
+VOLUME ["/etc/default/", "/etc/certs"]
 
 ENTRYPOINT /etcd-aws-cluster
